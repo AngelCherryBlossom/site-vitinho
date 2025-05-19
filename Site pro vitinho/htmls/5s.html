@@ -1,0 +1,197 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/5s.css">
+     <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+    <title>5s</title>
+</head>
+<body>
+
+    <nav class="menu">
+        <a href="index.html"><img src="/midia/icon.png" alt="Menu"></a>
+        <a href="kaizen.html"><img src="/midia/kaizen.png" alt="Kaizen"></a>
+        <a href="5s.html"><img src="/midia/5s.png" alt="5s"></a>
+        <a href="pdca.html"><img src="/midia/pdca.png" alt="PDCA"></a>
+        <a href="/htmls/ishikawa.html"><img src="/midia/ishi.png" alt="Diagrama de Ishikawa"></a>
+    </nav>
+
+    <header class="menu1">
+        <h1>🌻 Projeto SOLPP</h1>
+        <p>
+            O método 5S nasceu no Japão e é uma prática para melhorar ambientes, organização e produtividade.
+            No Brasil, é conhecido também como SOLPP: Selecionar, Organizar, Limpar, Padronizar e Praticar.
+        </p>
+
+    </header>
+    
+    <main class="jogo">
+        <section id="jogo" class="bloco">
+            <h2>Minijogo: Faça o Girassol Florescer 🌱</h2>
+                <p>Cada fase representa um dos 5S. Vamos começar?</p>
+            <div id="fases-container" class="fases">
+                <div class="fases-placeholder" id="fase1" > <!-- COloquei o id já pra ajudar no css-->
+                    <p>👾 (Jogo em construção...)</p>
+                </div>
+        </div>
+        </section>
+
+    </main>
+
+<script>
+
+ const boas = [ 
+    'sementeboa',
+    'sementeboa1'
+];
+
+const ruins = [
+    'sementeruim',
+    'sementeruim1'
+];
+
+let pontuacao = 0;
+const container = document.getElementById('fases-container');
+
+function startFase1() {
+    container.innerHTML = `
+    <p>💡 Fase 1 – Selecione apenas as boas sementes!</p>
+    <div id="fase1" class="fase-grid"></div>
+    <p>Pontos: <span id="pts1">0</span></p>
+    <button id="btn1" disabled>Próxima Fase</button>
+    `;
+
+    const grid = document.getElementById('fase1');
+
+    const itens = [];
+    for (let i = 0; i < 6; i++) {
+        const classe = boas[i % boas.length];
+        itens.push({ classe, type: 'boa' });
+    }
+    for (let i = 0; i < 4; i++) {
+        const classe = ruins[i % ruins.length];
+        itens.push({ classe, type: 'ruim' });
+    }
+    itens.sort(() => Math.random() - 0.5);
+
+    itens.forEach(({ classe, type }) => {
+        const div = document.createElement('div');
+        div.classList.add('semente', classe);
+        div.dataset.type = type;
+        grid.appendChild(div);
+
+        div.addEventListener('click', () => {
+            if (div.classList.contains('clicada')) return;
+
+            if (type === 'boa') {
+                pontuacao++;
+                document.getElementById('pts1').textContent = pontuacao;
+                div.style.opacity = '0.4';
+                div.classList.add('clicada');
+            } else {
+                pontuacao = Math.max(0, pontuacao - 1);
+                document.getElementById('pts1').textContent = pontuacao;
+                div.classList.add('shake');
+                setTimeout(() => div.classList.remove('shake'), 500);
+            }
+
+            if (document.querySelectorAll('#fase1 .semente[data-type="boa"].clicada').length === 6) {
+                document.getElementById('btn1').disabled = false;
+            }
+        });
+    });
+
+    document.getElementById('btn1').addEventListener('click', () => {
+        startFase2();
+    });
+}
+
+startFase1();
+
+function startFase2() {
+
+    container.innerHTML = `
+      <p>🗂️ Fase 2 – Organize as ferramentas!</p>
+      <div id="fase2" class="fase2-grid"></div>
+      <p>Pontos: <span id="pts2">${pontuacao}</span></p>
+      <button id="btn2" disabled>Próxima Fase</button>
+    `;
+
+    const grid = document.getElementById('fase2');
+    // define pares ferramenta → slot correto
+    const ferramentas = [
+      { name: 'pa',           label: 'Pá' },
+      { name: 'regador',      label: 'Regador' },
+      { name: 'tesoura',      label: 'Tesoura' },
+      { name: 'fertilizante', label: 'Fertilizante' },
+      { name: 'luvas',        label: 'Luvas' },
+      { name: 'balde',        label: 'Balde' }
+    ];
+
+    ferramentas.forEach(tool => {
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = `
+        <div class="slot" data-slot="${tool.name}"></div>
+        <div class="ferramenta ${tool.name}" data-tool="${tool.name}" title="${tool.label}"></div>
+      `;
+      grid.appendChild(wrapper);
+    });
+
+    let selectedTool = null;
+    document.querySelectorAll('.ferramenta').forEach(el => {
+      el.addEventListener('click', () => {
+        document.querySelectorAll('.ferramenta.selected')
+          .forEach(e => e.classList.remove('selected'));
+        if (selectedTool === el) {
+          selectedTool = null;
+        } else {
+          el.classList.add('selected');
+          selectedTool = el;
+        }
+      });
+    });
+
+    document.querySelectorAll('.slot').forEach(slot => {
+      slot.addEventListener('click', () => {
+        if (!selectedTool) return;
+        const toolName = selectedTool.dataset.tool;
+        const slotName = slot.dataset.slot;
+
+        if (toolName === slotName) {
+          // encaixa
+          slot.classList.add('filled');
+          slot.appendChild(selectedTool);
+          selectedTool.style.position = 'absolute';
+          selectedTool.style.top = 0;
+          selectedTool.style.left = 0;
+          selectedTool.classList.remove('selected');
+          selectedTool = null;
+          pontuacao++;
+          document.getElementById('pts2').textContent = pontuacao;
+
+          // se todas encaixadas, habilita botão
+          if (document.querySelectorAll('.slot.filled').length === 6) {
+            document.getElementById('btn2').disabled = false;
+          }
+        } else {
+          // erro
+          pontuacao = Math.max(0, pontuacao - 1);
+          document.getElementById('pts2').textContent = pontuacao;
+          selectedTool.classList.add('shake');
+          setTimeout(() => selectedTool.classList.remove('shake'), 300);
+        }
+      });
+    });
+
+    document.getElementById('btn2').addEventListener('click', () => {
+      startFase3(); // criamos logo em seguida…
+    });
+  }
+
+</script>
+
+</body>
+</html>
+

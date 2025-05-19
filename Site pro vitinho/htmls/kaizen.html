@@ -1,0 +1,108 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaizen</title>
+    <link rel="stylesheet" href="/css/kaizen.css">
+</head>
+<body>
+
+ <nav class="menu">
+
+    <a href="index.html">
+        <img src="/midia/icon.png" alt="Menu">
+    </a>
+     <a href="kaizen.html">
+        <img src="/midia/kaizen.png" alt="Kaizen">
+     </a>
+     <a href="5s.html">
+        <img src="/midia/5s.png" alt="5s">
+     </a>
+     <a href="pdca.html">
+        <img src="/midia/pdca.png" alt="PDCA">
+     </a>
+     <a href="/htmls/ishikawa.html">
+        <img src="/midia/ishi.png" alt="Diagrama de Ishikawa">
+     </a>
+
+    </nav>
+
+    <div id="organizacao"  class="container">
+        <div id="blocoTexto">
+           <h1> 🧭 O que é Kaizen?</h1>
+            "Kaizen" é uma palavra japonesa que significa melhoria contínua. <br> É a ideia de que sempre dá pra fazer melhor <br> seja no trabalho, nos estudos ou na vida.
+        </div>
+        <button id="botaoVoltar">Voltar</button>
+        <button id="botaoAvancar">Avançar</button>
+
+    </div>
+    <script>
+
+
+let item0 = document.getElementById("organizacao")
+
+        const blocos = [ "🧭 O que é Kaizen?",
+    "Kaizen significa <strong>melhoria contínua</strong>. É um conceito japonês que envolve todos na organização.",
+  "O foco do Kaizen está em <em>melhorar processos continuamente</em>, mesmo que em pequenos passos.",
+  "Envolver todos os colaboradores é essencial: <u>do chão de fábrica à diretoria</u>.",
+  "A filosofia Kaizen preza por eliminar desperdícios e aumentar a eficiência.",
+  "Ela é base para outras ferramentas como os 5S, PDCA e o Diagrama de Ishikawa.",
+   `🎮 <strong>Vamos praticar?</strong><br><br>
+    Agora que você aprendeu os fundamentos, que tal aplicar os princípios do Kaizen em um <strong>minijogo interativo</strong>?<br>
+    Nele, você terá que clicar uma vez na estrela pra receber a melhoria.<br> E duas vezes na bomba pra acabar com o desperdício.<br><br>
+    Clique no botão abaixo para começar o desafio!`
+];
+
+let indiceAtual = 0
+const somClique = new Audio("magic-3-278824.mp3")
+const divTexto = document.getElementById("blocoTexto");
+const botaoAvancar = document.getElementById("botaoAvancar");
+const botaoVoltar = document.getElementById("botaoVoltar");
+
+function atualizarTexto() {
+
+    divTexto.innerHTML = blocos[indiceAtual];
+
+    if (indiceAtual === blocos.length -1) {
+        botaoAvancar.textContent = "▶ Jogar agora";
+        botaoAvancar.onclick = () => {
+            window.location.href = "kaizen-jogo.html";
+        };
+    } else {
+        botaoAvancar.textContent = "Avançar";
+        botaoAvancar.onclick = mostrarTexto;
+    }
+
+    botaoVoltar.disabled = indiceAtual === 0;
+}
+
+function mostrarTexto() {
+    if (indiceAtual < blocos.length - 1){
+        indiceAtual++;
+        atualizarTexto();
+        somClique.play();
+    } else {
+        divTexto.innerHTML = "🌟 Fim do conteúdo sobre Kaizen! Você pode voltar ou revisar.";
+        document.getElementById("bloco-final").style.display = "block";
+    }
+    
+}
+        
+function voltarTexto() {
+    if (indiceAtual > 0) {
+        indiceAtual--;
+        atualizarTexto();
+        somClique.play();
+    }
+    
+}
+
+botaoAvancar.addEventListener("click", mostrarTexto);
+botaoVoltar.addEventListener("click", voltarTexto);
+
+atualizarTexto();
+    </script>
+</body>
+</html>

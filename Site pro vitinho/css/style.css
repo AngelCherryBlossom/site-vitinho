@@ -1,0 +1,149 @@
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: 'Inter', sans-serif;
+    padding-top: 60px;
+    color: #333;
+    text-align: center;
+    background: linear-gradient( 120rad,
+        #9f5bff 0%,
+        #494cfa 50%,
+        #a8dcf7 100%);
+    background-attachment: fixed;
+    color: #333;
+}
+
+h1 {
+    font-size: 2em;
+    margin: 40px 0 20px;
+    color: #248eff;
+}
+
+.menu {
+    background-color: rgb(255, 255, 255);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+}
+
+.menu a img {
+   height: 40px;
+   transition: transform 0.3s ease;
+}
+
+.menu a img:hover {
+    transform: scale(1.2);
+   cursor: pointer;
+}
+
+header {
+    position: relative;
+    height: 300px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 1;
+    background-image: url(/midia/header.png);
+    background-size: cover;
+    background-position: center;
+    padding: 30px 20px 10px;
+    margin-bottom: 10px;
+}
+
+header::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 0;
+}
+
+header p {
+  font-size: 1.2em;
+  color: white;
+  z-index: 1;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+header h1{
+    font-size: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    padding: 40px 20px;
+    z-index: 1;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+
+}
+
+main {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    padding: 40px 20px ;
+}
+
+.bloco {
+    width: 280px;
+    padding: 20px;
+    background-color: rgba(255,255,255,0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3 ease;
+}
+
+.bloco:hover {
+    transform: translateX(-6px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.8);
+}
+
+.bloco img {
+    height: 80px;
+    margin-bottom: 15px;
+}
+
+.bloco h2 {
+    font-size: 1.4rem;
+    color: #004a99;
+    margin-bottom: 10px;
+}
+
+.bloco p {
+    font-size: 0.95rem;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.botao {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #0077cc;
+    color: white;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.botao:hover {
+    background-color: #00a34c;
+}
+

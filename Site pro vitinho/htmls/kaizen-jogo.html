@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minijogo Kaisen</title>
+    <link rel="stylesheet" href="/css/kaizen-jogo.css">
+</head>
+<body>
+    <nav class="menu">
+
+    <a href="index.html">
+        <img src="/midia/icon.png" alt="Menu">
+    </a>
+     <a href="kaizen.html">
+        <img src="/midia/kaizen.png" alt="Kaizen">
+     </a>
+     <a href="5s.html">
+        <img src="/midia/5s.png" alt="5s">
+     </a>
+     <a href="pdca.html">
+        <img src="/midia/pdca.png" alt="PDCA">
+     </a>
+     <a href="/htmls/ishikawa.html">
+        <img src="/midia/ishi.png" alt="Diagrama de Ishikawa">
+     </a>
+
+    </nav>
+
+    <div id="jogo">
+  <div id="pontuacao">Pontos: 0</div>
+  <div id="tempo">Tempo: 30s</div>
+  <div id="fim">
+    <p id="mensagem-final"></p>
+    <button onclick="window.location.reload()">Jogar de novo</button>
+  </div>
+</div>
+
+    <script>
+    const jogo = document.getElementById("jogo");
+    const tempoEl = document.getElementById("tempo");
+    const pontuacaoEl =document.getElementById("pontuacao");
+    const fimEl = document.getElementById("fim");
+    const msgFinal = document.getElementById("mensagem-final");
+
+    let pontuacao = 0;
+    let tempo = 30;
+    let itens = [];
+    let intervaloJogo;
+
+    function criarItem(tipo) {
+        const el = document.createElement("div");
+        el.classList.add("item",tipo);
+
+        el.style.top = Math.random() * (window.innerHeight - 60) + "px";
+        el.style.left = Math.random() * (window.innerWidth - 60) + "px";
+
+        if (tipo === "desperdicio") {
+            let cliques = 0;
+            el.addEventListener("click", () => {
+                cliques++;
+                el.style.transform = "scale(1.2)";
+                if (cliques >= 2) {
+                    pontuacao += 3;
+                    el.remove();
+                    itens = itens.filter(i => i !== el);
+                    atualizarPontuação();
+                    const frases = [
+                        "Fechou a torneira!",
+                        "Guardou cavaco!",
+                        "Reduziu o uso de papel!",
+                        "Desligou a luz!",
+                        "Economizou água!",
+                        "Evaporou o desperdício!",
+                        "Fez o Kaizen sorrir 😄"
+                    ];
+                const msg = document.createElement("div");
+                msg.textContent = frases[Math.floor(Math.random() * frases.length)];
+                msg.style.position = "absolute";
+                msg.style.left = el.style.left;
+                msg.style.top = el.style.top;
+                msg.style.background = "rgba(0,0,0,0.7)";
+                msg.style.color = "white";
+                msg.style.padding = "5px 10px";
+                msg.style.borderRadius = "10px";
+                msg.style.zIndex = "9999";
+
+                document.body.appendChild(msg);
+                setTimeout(() => msg.remove(), 2000);
+                }
+            });
+        }
+
+        if (tipo === "melhoria") {
+            el.addEventListener("click", () => {
+                pontuacao += 1;
+                const frases = [
+            "Implantou um novo processo!",
+            "Organizou o ambiente!",
+            "Otimização de tempo!",
+            "Padronizou o sistema!",
+            "Deu treinamento à equipe!",
+            "Aplicou os 5S!",
+            "Melhoria contínua ativada! 🚀"
+        ];
+
+        const msg = document.createElement("div");
+        msg.textContent = frases[Math.floor(Math.random() * frases.length)];
+        msg.style.position = "absolute";
+        msg.style.left = el.style.left;
+        msg.style.top = el.style.top;
+        msg.style.background = "rgba(0, 100, 0, 0.8)";
+        msg.style.color = "white";
+        msg.style.padding = "5px 10px";
+        msg.style.borderRadius = "10px";
+        msg.style.zIndex = "9999";
+        document.body.appendChild(msg);
+        setTimeout(() => msg.remove(), 2000);
+
+                el.remove();
+                itens = itens.filter(i => i !== el);
+                atualizarPontuação();
+            });
+        }
+        jogo.appendChild(el);
+        itens.push(el);
+    }
+
+function atualizarPontuação() {
+    pontuacaoEl.textContent = `Tempo: ${pontuacao}s`;
+}
+
+function atualizarTempo() {
+    tempo--;
+    tempoEl.textContent = `Tempo: ${tempo}s`;
+
+    if (tempo <= 0) {
+        clearInterval(intervaloJogo);
+        encerrarJogo();
+    }
+}
+
+function moverAleatoriamente(item) {
+    const passo = 20;
+    let leftAtual = parseFloat(item.style.left);
+    let topAtual = parseFloat(item.style.top);
+
+
+    const deltaX = (Math.floor(Math.random() * 3) -1) * passo;
+    const deltaY = (Math.floor(Math.random() * 3) -1) * passo;
+
+    let novaEsquerda = leftAtual + deltaX;
+    let novoTopo = topAtual + deltaY;
+
+    novaEsquerda = Math.max(0, Math.min(window.innerWidth - item.offsetWidth, novaEsquerda));
+    novoTopo = Math.max(0, Math.min(window.innerHeight - item.offsetWidth, novoTopo));
+
+    item.style.left = novaEsquerda + 'px';
+    item.style.top = novoTopo + 'px';
+}
+
+setInterval(() => {
+    const itens = document.querySelectorAll('.item');
+    itens.forEach(item => {
+        moverAleatoriamente(item);
+    });
+}, 1000);
+
+function verificarColisoes() {
+    const melhorias = itens.filter( i => i.classList.contains("melhoria"));
+    const desperdicios = itens.filter( i => i.classList.contains("desperdicio"));
+
+
+    melhorias.forEach(m => {
+        const mRect = m.getBoundingClientRect();
+
+        desperdicios.forEach(d => {
+            const dReact = d.getBoundingClientRect();
+
+            const colidiu = !(
+                dRect.right < mRect.left ||
+                dRect.left > mRect.right ||
+                dRect.bottom < mRect.top ||
+                dRect.top > mRect.bottom
+            );
+
+            if (colidiu) {
+                pontuacao -= 2;
+                d.remove();
+                m.remove();
+                itens = itens.filter(i => i !== d && i !== m);
+                atualizarPontuação();
+            }
+        });
+    });
+}
+
+function iniciarJogo() {
+    intervaloJogo = setInterval(() => {
+        criarItem(Math.random() < 0.5 ? "desperdicio" : "melhoria");
+        verificarColisoes();
+    }, 1000);
+
+    setInterval(atualizarTempo, 1000)
+}
+
+function encerrarJogo() {
+    itens.forEach(i => i.remove());
+    fimEl.style.display = "flex";
+    let mensagem = "Você foi ótimo! 💪";
+    if (pontuacao < 10) mensagem = "Você pode melhorar! Tente de novo! 🔁"
+    else if (pontuacao < 20) mensagem = "Bom trabalho! 👏";
+    msgFinal.textContent = `Sua pontuação: ${pontuacao}\n${mensagem}`;
+}
+
+iniciarJogo();
+
+    </script>
+    
+</body>
+</html>
